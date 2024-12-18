@@ -9,40 +9,74 @@
     <title>Minesweeper</title>
 </head>
 
-<body onload="init()">
+<body onload="onInit()" oncontextmenu="return false;">
 
+    
     <div class="game-container">
-        <div class = "header">
-            <table>
-                <tr>
-                    <td class = "mines">
-                        <img class = "digit digit-2" src = "img/digit-0.png"/>
-                        <img class = "digit digit-1" src = "img/digit-0.png"/>
-                        <img class = "digit digit-0" src = "img/digit-0.png"/>
-                    </td>
-                    <td>
-                        <img class = "smiley" src = "img/smiley.png"/>
-                    </td>
-                    <td class = "timer">
-                        <img class = "digit digit-2" src = "img/digit-0.png"/>
-                        <img class = "digit digit-1" src = "img/digit-0.png"/>
-                        <img class = "digit digit-0" src = "img/digit-0.png"/>
-                    </td>
-                </tr>
-            </table>
-
+        
+        <div class="title-bar">
+            <img class = "img-icon" src = "img/icon.png"/>
+            <span class = "title-bar-text">Minesweeper</span>
+            <img class = "control-buttons" src = "img/win_95_control_buttons.png"/>
         </div>
-        <div class="board-container">
 
+        <div class="menu-bar">
+            <span class = "menu-item" onclick="onInit(4, 2)"><u>E</u>asy</span>
+            <span class = "menu-item" onclick="onInit(8, 14)"><u>M</u>edium</span>
+            <span class = "menu-item" onclick="onInit(12, 32)"><u>H</u>ard</span>
+            <!-- <span class = "menu-item" onclick="onInit(16, 64)"><u>V</u>ery Hard</span> -->
         </div>
-    </div>
 
+        <div class = "actual-game">        
+            <div class = "header">
+                <table>
+                    <tr>
+                        <td class = "mines">
+                            <img class = "digit digit-2" src = "img/digit-0.png"/>
+                            <img class = "digit digit-1" src = "img/digit-0.png"/>
+                            <img class = "digit digit-0" src = "img/digit-0.png"/>
+                        </td>
+                        <td>
+                            <img class = "smiley" onclick = "onInit()" src = "img/smiley.png"/>
+                        </td>
+                        <td class = "timer">
+                            <img class = "digit digit-2" src = "img/digit-0.png"/>
+                            <img class = "digit digit-1" src = "img/digit-0.png"/>
+                            <img class = "digit digit-0" src = "img/digit-0.png"/>
+                        </td>
+                    </tr>
+                </table>
 
-    <div class="modal">
-        <h1> </h1>
-        <button onclick="init()"> Play Again? </button>    
+            </div>        
+            <div class="board-container">
+
+            </div>
+            
+            <div class = "footer">
+                <table>
+                    <tr>
+                        <td class = "lives-container"> 
+                            <img class = "img-heart live-1" src = "img/heart.png"/>
+                            <img class = "img-heart live-2" src = "img/heart.png"/>
+                            <img class = "img-heart live-3" src = "img/heart.png"/>
+                        </td>
+                        <!-- <td class = "author">Yam Peleg</td> -->
+                    </tr>
+                </table>
+            </div>
+
+        </div>        
+    
+
     </div>
     
+    <div class="modal">
+        <h1> </h1>
+        <button onclick="onInit()"> Play Again? </button>    
+    </div>
+    
+    
+
     <script src="js/utils.js"></script>
     <script src="js/game.js"></script>
 </body>

@@ -1,8 +1,17 @@
 
 
 body {
+    font-size: 14px;
 	text-align: center;
     font-family: Arial, Helvetica, sans-serif;
+}
+
+.title-bar {
+    background-color: #0a0487;
+    height: 20px;
+    padding: 1px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .mines {
@@ -22,6 +31,17 @@ body {
     border-left: 2px solid #ffffff;
     border-right: 2px solid #7b7b7b;
     border-bottom: 2px solid #7b7b7b;
+}
+
+/* .smiley:hover { */
+    /* background-color: #ffffff;    */
+/* } */
+
+.smiley:active {
+    border-top: 2px solid #7b7b7b;
+    border-left: 2px solid #7b7b7b;
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
 }
 
 .digit {
@@ -59,8 +79,20 @@ body {
     border-bottom: 2px solid #ffffff;
 }
 
+
 .game-container{
+    padding: 2px;
     display: inline-block;
+    background-color: #bdbdbd;
+
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #7b7b7b;
+    border-bottom: 2px solid #7b7b7b;
+}
+
+.actual-game{
+    padding: 2px;
     background-color: #bdbdbd;
 
     border-top: 2px solid #ffffff;
@@ -107,6 +139,24 @@ body {
     background-color: #bdbdbd;
 }
 
+.img-icon {
+    display: block;
+    float: left;
+    max-height: 20px;
+}
+
+.control-buttons{
+    display: block;
+    float: right;
+    max-height: 20px;
+}
+
+.title-bar-text {
+    float: left;
+    color: white;
+    padding-top: 1px;
+}
+
 .inner-img {
     display: block;
     margin: auto;
@@ -115,3 +165,78 @@ body {
 .modal {
 	display: none;
 }
+
+.menu-bar {
+    height: 20px;
+    text-align: left;
+
+    margin-top: 6px;
+    margin-bottom: 2px;
+
+}
+
+.menu-item {
+    cursor: pointer;
+
+    padding-left: 7px;
+    padding-right: 7px;
+    
+    padding-top: 2px;
+    padding-bottom: 2px;
+    
+    border-top: 2px solid #bdbdbd;
+    border-left: 2px solid #bdbdbd;
+    border-right: 2px solid #bdbdbd;
+    border-bottom: 2px solid #bdbdbd;
+
+}
+
+.menu-item:hover {
+    background-color: #d7d7d7;
+    
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #7b7b7b;
+    border-bottom: 2px solid #7b7b7b;
+
+}
+
+.menu-item:active {
+    /* border: 2px solid #bdbdbd; */
+    border-top: 2px solid #7b7b7b;
+    border-left: 2px solid #7b7b7b;
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+
+    /* background-color: #bdbdbd; */
+}
+
+.footer {
+    
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    
+
+    border-top: 2px solid #7b7b7b;
+    border-left: 2px solid #7b7b7b;
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+
+    
+}
+
+.lives-container {
+    padding-left: 10px;
+}
+
+.author {
+    display: inline;
+    float: right;
+}
+
+.img-heart {
+    padding-top:2px;
+    width: 15px;
+}
+
