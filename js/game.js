@@ -1,5 +1,6 @@
 'use strict'
 
+
 const gGame = {
     
     // Essentials
@@ -13,13 +14,29 @@ const gGame = {
     firstClick: false,
     timerInterval: null,    
 
-    // Bonus Tasks
-    nHints: 3,    
+    // Bonus: Hint
+    nHints: 3,
     isHintMode: false,
 
+    // Bonus: Safe
     nSafes: 3,
-    nMegas: 1,
 
+    // Bonus: Mega-Hint
+    nMegas: 1,
+    isMegaMode: false,
+    megaCoords: null, 
+
+    // Bonus: Exterminator
+    exterminatorClicked: false,
+
+    // Bonus: Dark Mode
+    darkMode: false,
+
+    // Bonus: Undo
+    clicksHistory: [],
+
+    // Bonus: Creator Mode
+    isCreatorMode: false
 }
 
 const gLevel = {
@@ -29,33 +46,21 @@ const gLevel = {
 
 var gBoard
 
-
-// cursor modes:
-// hint (neighbors highlighted)
-
-
-
-
-
-// Essentials:
-// TODO: Author footer
-
+// Bonus: Leaderboard
+var gLeaderBoard
 
 
 // Bonus:
-// 1. Hints (show neighbors of whatever cell you click for 1 sec and "use the hint")
-
-// 3. Safe click (mark a safe cell to click on [border?])
-// 7. Mega hint: "draggable hint of unlimited size"
-
-// 2. Leaderboard (local storage)
+// - Creator mode
 
 
-// 4. "Manually create mode"
-// 5. Undo button
-// 6. Dark mode
-// 8. Mine exterminator (deletes 3 mines randomlly)
 
+// TODO: Design:
+// 1. Dark Mode: adjust colors & make dark icons
+// 2. Dark Mode colors
+// 3. Leaderboard move to the side
+// 4. Leaderboard make nicer
+// 5. Dark mode button
 
 
 
@@ -72,14 +77,63 @@ function flashSmiley() {
     }
 }
 
-function onInit(boardSize = null, mines = null) {    
+function toggleTheme(){
+    if (gGame.darkMode) {
+        document.documentElement.classList.remove('dark-mode')
+        document.documentElement.classList.add('light-mode')
+        document.querySelector('body').style.backgroundColor = 'white'
+        document.querySelector('body').style.color = 'black'
+        gGame.darkMode = false
+    } else {
+        document.documentElement.classList.add('dark-mode')
+        document.documentElement.classList.remove('light-mode')
+        document.querySelector('body').style.color = 'white'
+        document.querySelector('body').style.backgroundColor = 'black'
+        gGame.darkMode = true
+    }
+}
+
+function restartInCreatorMode() {
+    if (!gGame.isCreatorMode) {
+        document.querySelector('.img-creator').src = 'img/play.png'
+        gGame.isCreatorMode = true
+        onInit()
+    } else {
+
+        gGame.timerInterval = setInterval(timerTick, 1000)
+        for (var i = 0; i < gBoard.length; i++) {
+            for (var j = 0; j < gBoard[0].length; j++) {
+                gBoard[i][j].isShown = false
+            }
+        }
+        gGame.isOn = true
+        gGame.firstClick = true
+
+        gBoard = initMinesAround(gBoard)
+        gGame.firstClick = true
+
+        renderBoard(gBoard, '.board-container')
+
+        document.querySelector('.img-creator').src = 'img/pencil.png'
+        gGame.isCreatorMode = false
+
+        var allMines = getAllMines(gBoard)
+
+        gLevel.MINES = allMines.length
+
+        updateMinesCounter()
+    }
+}
+
+function onInit(boardSize = null, mines = null) {
+
+    // document.documentElement.classList.add('dark-mode');
 
     if (!(boardSize === null) && !(mines === null)){        
-        console.log(boardSize, mines)
+        // console.log(boardSize, mines)
         gLevel.MINES = mines
         gLevel.SIZE = boardSize
     }
-    
 
     // Essentials
     gGame.isOn = true   
@@ -93,10 +147,23 @@ function onInit(boardSize = null, mines = null) {
     gGame.nHints = 3
     gGame.nSafes = 3
     gGame.nMegas = 1
+    gGame.darkMode = false
+    gGame.megaCoords = null
+    gGame.clicksHistory = []
     gGame.isHintMode = false
+    gGame.isMegaMode = false
+    gGame.exterminatorClicked = false
 
 
-    
+    gLeaderBoard = JSON.parse(localStorage.getItem("minesweeper-leaderboard"))
+    if (gLeaderBoard === null) {
+        gLeaderBoard = []
+        localStorage.setItem("minesweeper-leaderboard", JSON.stringify(gLeaderBoard))
+    }
+
+    renderLeaderBoard()
+
+
     updateLivesCounter()
     clearInterval(gGame.timerInterval)
 
@@ -109,7 +176,17 @@ function onInit(boardSize = null, mines = null) {
 
     timerTick()
     gGame.timerInterval = setInterval(timerTick, 1000)
-    gBoard = buildBoard(gLevel.SIZE, gLevel.MINES)   
+    gBoard = buildBoard(gLevel.SIZE, gLevel.MINES)
+
+    if (gGame.isCreatorMode) {
+        clearInterval(gGame.timerInterval)
+        for (var i = 0; i < gBoard.length; i++) {
+            for (var j = 0; j < gBoard[0].length; j++) {
+                gBoard[i][j].isShown = true
+            }
+        }
+        renderBoard(gBoard, '.board-container')
+    }
 
     renderBoard(gBoard, '.board-container')
 
@@ -137,6 +214,26 @@ function expandShown(board, rowIdx, colIdx) {
     return board
 }
 
+function expandUnshown(board, rowIdx, colIdx) {
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i >= board.length) continue
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (j < 0 || j >= board[0].length) continue
+            if (i === rowIdx && j === colIdx) continue
+            if (board[i][j].isMine) continue
+            if (!board[i][j].isShown) continue
+            if (board[i][j].isMarked) continue
+            board[i][j].isShown = false
+            gGame.shownCount--
+            if (board[i][j].minesAroundCount === 0) {
+                expandUnshown(board, i, j)
+            }
+        }
+    }
+    return board
+}
+
+
 function onCellMarked(i, j) {
 
     if (!gGame.isOn) return    
@@ -147,13 +244,14 @@ function onCellMarked(i, j) {
     if (cell.isMarked) {
         cell.isMarked = false
         gGame.markedCount--
-
+        cell.wasMarked = true
     } else {
         if ((gLevel.MINES - gGame.markedCount) < 1) return
         cell.isMarked = true
         gGame.markedCount++
-
     }
+
+    gGame.clicksHistory.push({i: i, j: j})
 
     renderBoard(gBoard, '.board-container')
 
@@ -167,8 +265,9 @@ function onCellMarked(i, j) {
 
 function checkGameOver() {
     var allNonMinesAreShown = (gGame.shownCount === (gLevel.SIZE ** 2 - gLevel.MINES))
-    var allMinesMarked = (gGame.markedCount == gLevel.MINES)
-    return (allNonMinesAreShown && allMinesMarked)
+    var allMinesMarked = (gGame.markedCount === gLevel.MINES)
+    var allMinesAreDead = (gLevel.MINES === 0)
+    return (allNonMinesAreShown && allMinesMarked) || allMinesAreDead
 }
 
 function initMinesAround(board){
@@ -203,11 +302,51 @@ function updateLivesCounter(){
 
 }
 
+function getAllMines(board){
+    var mineIndices = []
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board[0].length; j++) {
+            if (board[i][j].isMine){
+                mineIndices.push({i:i, j:j})
+            }            
+        }
+    }
+    return mineIndices
+}
 
+function onMineExterminatorClicked(){
+    if (!gGame.exterminatorClicked) {
 
+        var allMineIndices = getAllMines(gBoard)
+        var indicesToDelete = randomSample(allMineIndices, 3)
 
+        for (var idx = 0; idx < indicesToDelete.length; idx++ ) {
+            
+            gBoard[indicesToDelete[idx].i][indicesToDelete[idx].j].isMine = false
+            gBoard[indicesToDelete[idx].i][indicesToDelete[idx].j].isMarked = false
 
+            gBoard[indicesToDelete[idx].i][indicesToDelete[idx].j].isShown = true
+            gBoard[indicesToDelete[idx].i][indicesToDelete[idx].j].isDeadMine = true
 
+            gLevel.MINES -= 1
+
+        }
+
+        initMinesAround(gBoard)
+        updateMinesCounter()
+        renderBoard(gBoard, '.board-container')    
+
+        document.querySelector('.exterminator.item-1').src = 'img/Empty.png'       
+        document.querySelector('.exterminator-button').classList.remove('cheat-item')
+        document.querySelector('.exterminator-button').classList.add('used-cheat')
+
+        gGame.exterminatorClicked = true
+
+        if (checkGameOver()) {
+            victorious()
+        }
+    }
+}
 
 
 //////// Cheat: Mega-Hint ////////
@@ -216,7 +355,50 @@ function updateMegaHintsCounter(){
     if (gGame.nMegas > 0) {        
         document.querySelector('.mega.item-1').src = 'img/mega-hint.png'
     } else {
-        document.querySelector('.mega.item-1').src = 'img/Empty.png'
+        document.querySelector('.mega.item-1').src = 'img/Empty.png'       
+        document.querySelector('.mega-button').classList.remove('cheat-item')
+        document.querySelector('.mega-button').classList.add('used-cheat')
+    }
+}
+
+function glimpseMega(i1, j1, i2, j2, board) {
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board[0].length; j++) {
+            
+            if (
+                    i >= Math.min(i1, i2) &&
+                    i <= Math.max(i1, i2) && 
+
+                    j >= Math.min(j1, j2) &&
+                    j <= Math.max(j1, j2)
+
+               ) {
+                board[i][j].isGlimps = true            
+            }
+        }
+    }
+    setTimeout(unglimpsAllBoard, 1000)
+}
+
+function megaMode(i, j) {
+    if (gGame.megaCoords === null) {
+        gGame.megaCoords = {i: i, j: j}
+
+        return
+
+    } else {
+        gGame.nMegas--
+        updateMegaHintsCounter()
+        document.querySelector('.mega-button').classList.remove('active-button')
+        document.querySelector('.mega-button').classList.add('cheat-item')
+
+        glimpseMega(gGame.megaCoords.i, gGame.megaCoords.j, i, j, gBoard)
+        renderBoard(gBoard, '.board-container')
+
+        gGame.isMegaMode = false
+        gGame.megaCoords = null
+
+        return
     }
 }
 
@@ -243,6 +425,10 @@ function updateSafesCounter(){
         document.querySelector('.safes.item-1').src = 'img/empty.png'
         document.querySelector('.safes.item-2').src = 'img/empty.png'
         document.querySelector('.safes.item-3').src = 'img/empty.png'
+        
+        document.querySelector('.safe-button').classList.remove('cheat-item')
+        document.querySelector('.safe-button').classList.add('used-cheat')
+                
     }
 }
 
@@ -279,6 +465,11 @@ function onSafeClicked() {
         updateSafesCounter()
         var safeIndex = randomChoice(getAllSafe(gBoard))        
         showSafe(safeIndex.i, safeIndex.j)
+
+        if (gGame.nSafes == 0) {
+            document.querySelector('.safes-button').classList.remove('cheat-item')
+            document.querySelector('.safes-button').classList.add('used-cheat')
+        }
     }
 }
 
@@ -309,24 +500,43 @@ function updateHintsCounter(){
         document.querySelector('.hints.item-1').src = 'img/empty.png'
         document.querySelector('.hints.item-2').src = 'img/empty.png'
         document.querySelector('.hints.item-3').src = 'img/empty.png'
+
+        document.querySelector('.hints-button').classList.remove('cheat-item')
+        document.querySelector('.hints-button').classList.add('used-cheat')
     }
 
 }
 
 function onHintsClicked() {
     if (gGame.nHints > 0) {        
-        gGame.nHints-- 
-        updateHintsCounter()
-        gGame.isHintMode = true
-        
+        if (!gGame.isMegaMode) {
+            if (!gGame.isHintMode) {
+                gGame.isHintMode = true
+                document.querySelector('.hints-button').classList.add('active-button')
+                document.querySelector('.hints-button').classList.remove('cheat-item')                
+            } else {
+                gGame.isHintMode = false
+                document.querySelector('.hints-button').classList.remove('active-button')
+                document.querySelector('.hints-button').classList.add('cheat-item')                
+            }            
+        }
     }
 }
 
 function onMegaHintsClicked() {
-    if (gGame.nMegas > 0) {        
-        gGame.nMegas-- 
-        updateMegaHintsCounter()
-        
+    if (gGame.nMegas > 0) {
+        if (!gGame.isHintMode) {
+            if (!gGame.isMegaMode) {
+                gGame.isMegaMode = true
+                document.querySelector('.mega-button').classList.add('active-button')
+                document.querySelector('.mega-button').classList.remove('cheat-item')                
+            } else {
+                gGame.isMegaMode = false            
+                gGame.megaCoords = null
+                document.querySelector('.mega-button').classList.remove('active-button')
+                document.querySelector('.mega-button').classList.add('cheat-item')                
+            }
+        }
     }
 }
 
@@ -334,8 +544,7 @@ function glimpseAllCellsAround(rowIdx, colIdx, mat) {
     for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
         if (i < 0 || i >= mat.length) continue
         for (var j = colIdx - 1; j <= colIdx + 1; j++) {
-            if (j < 0 || j >= mat[0].length) continue
-            if (i === rowIdx && j === colIdx) continue
+            if (j < 0 || j >= mat[0].length) continue            
             mat[i][j].isGlimps = true            
         }
     }    
@@ -351,6 +560,99 @@ function unglimpsAllBoard() {
     renderBoard(gBoard, '.board-container')    
 }
 
+function updateHover(i2, j2) {
+
+    if (gGame.isCreatorMode) {
+
+        for (var i = 0; i < gBoard.length; i++) {
+            for (var j = 0; j < gBoard[0].length; j++) {
+                if (i == i2 && j == j2) {
+                    var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
+                    elCell.classList.add('hovered-cell-open')
+                    elCell.classList.remove('cell-shown')
+                } else {
+                    var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
+                    elCell.classList.remove('hovered-cell-open')
+                    elCell.classList.add('cell-shown')
+                }
+            }
+        }
+        return
+    }
+
+    // mega-hint selector
+    if ((gGame.isMegaMode && gGame.megaCoords)) {
+
+        var i1 = gGame.megaCoords.i
+        var j1 = gGame.megaCoords.j
+
+        for (var i = 0; i < gBoard.length; i++) {
+            for (var j = 0; j < gBoard[0].length; j++) {
+                
+                if (
+                        i >= Math.min(i1, i2) &&
+                        i <= Math.max(i1, i2) && 
+    
+                        j >= Math.min(j1, j2) &&
+                        j <= Math.max(j1, j2)
+    
+                    ) {
+                        
+                        console.log(i, j)
+
+                        var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`) 
+                        elCell.classList.add('hovered-cell')
+                        elCell.classList.remove('cell-hidden')    
+
+                } else {
+                    
+                    var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`) 
+                    elCell.classList.add('cell-hidden')    
+                    elCell.classList.remove('hovered-cell')
+                    
+
+                }
+            }
+        }
+    } 
+    
+    // hint selector
+    if (gGame.isHintMode) {
+        for (var i = 0; i < gBoard.length; i++) {            
+            for (var j = 0; j < gBoard[0].length; j++) {
+                var distanceY = Math.abs(i - i2)
+                var distanceX = Math.abs(j - j2)
+                if ((distanceX <= 1) && (distanceY <= 1)){
+                    var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`) 
+                    elCell.classList.add('hovered-cell')
+                    elCell.classList.remove('cell-hidden')    
+                } else {
+                    var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`) 
+                    elCell.classList.add('cell-hidden')                        
+                    elCell.classList.remove('hovered-cell')                    
+                }
+            }
+        }    
+        
+    }
+}
+
+function hintMode(i, j) {
+    gGame.nHints--
+    updateHintsCounter()
+    glimpseAllCellsAround(i, j, gBoard)
+    gGame.isHintMode = false
+    document.querySelector('.hints-button').classList.remove('active-button')
+    document.querySelector('.hints-button').classList.add('cheat-item')
+
+    if (gGame.nHints == 0) {
+        document.querySelector('.hints-button').classList.remove('cheat-item')
+        document.querySelector('.hints-button').classList.add('used-cheat')
+    }
+
+    renderBoard(gBoard, '.board-container')
+    return
+}
 
 //////// Cheat: Hint ////////
 
@@ -360,9 +662,62 @@ function unglimpsAllBoard() {
 
 
 
+function undoClicked() {
+    undoCell(gGame.clicksHistory[gGame.clicksHistory.length - 1].i, gGame.clicksHistory[gGame.clicksHistory.length - 1].j)
+    gGame.clicksHistory.pop()
+    renderBoard(gBoard, '.board-container')
+
+
+}
+
+function undoCell(i, j) {
+    const cell = gBoard[i][j]
+
+    if (cell.isMarked) {
+        cell.isMarked = false
+        gGame.markedCount--
+        updateMinesCounter()
+    }
+
+    if (cell.isShown) {
+        cell.isShown = false
+        gGame.shownCount--
+        if (cell.wasMarked) {
+            cell.isMarked = true
+            gGame.markedCount++
+            updateMinesCounter()
+        }
+    }
+
+    if (cell.isMine) {
+        gGame.livesLeft++
+        updateLivesCounter()
+        if (cell.wasMarked) {
+            cell.isMarked = true
+            gGame.markedCount++
+            updateMinesCounter()
+        }
+    }
+    cell.isShown = false
+    cell.justClicked = false
+    gGame.shownCount--
+
+    if (cell.minesAroundCount === 0) {
+        expandUnshown(gBoard, i, j)
+    }
+}
+
 function onCellClicked(i, j) {
-    
-    flashSmiley()
+
+    if (gGame.isCreatorMode) {
+        gBoard[i][j].isMine = !gBoard[i][j].isMine
+        gBoard = initMinesAround(gBoard)
+        renderBoard(gBoard, '.board-container')
+        return
+    }
+
+
+    if (!gGame.isOn) return
 
     if (!gGame.firstClick) {
         gBoard = distributeMines(gBoard, gLevel.MINES)        
@@ -372,12 +727,18 @@ function onCellClicked(i, j) {
         gGame.firstClick = true
     }
 
-    if (!gGame.isOn) return
-    
+    if (gGame.isMegaMode) { return megaMode(i, j) }
 
     const cell = gBoard[i][j]
 
     if (cell.isShown) return
+
+    if (gGame.isHintMode){ return hintMode(i, j) }
+
+    gGame.clicksHistory.push({i: i, j: j})
+
+    flashSmiley()
+
     if (cell.isMarked) {
         cell.isMarked = false
         gGame.markedCount--
@@ -385,17 +746,11 @@ function onCellClicked(i, j) {
 
     cell.isShown = true
     cell.justClicked = true
-    gGame.shownCount++
 
-    if (gGame.isHintMode){
-        glimpseAllCellsAround(i, j, gBoard)
-        gGame.isHintMode = false
-    }
+    gGame.shownCount++
     
-    
-    if (cell.minesAroundCount === 0) {
-        expandShown(gBoard, i, j)
-    }
+    if ((cell.minesAroundCount === 0) && (!cell.isMine) ) { expandShown(gBoard, i, j) }
+
     renderBoard(gBoard, '.board-container')
 
     if (cell.isMine) {
@@ -458,6 +813,7 @@ function updateMinesCounter() {
 
 }
 
+
 function distributeMines(board, n_mines) {
     var possibleIndices = []
     for (var i = 0; i < board.length; i++) {
@@ -477,12 +833,15 @@ function buildBoard(size, mines) {
     for (var i = 0; i < size; i++) {
         board.push([])
         for (var j = 0; j < size; j++) {
-            board[i][j] = {                
+            board[i][j] = {                   
                 isMine: false,
+                isHover: false,
                 isShown: false,
                 isGlimps: false,
                 isMarked: false,
-                justClicked: false, 
+                wasMarked: false,
+                isDeadMine: false,
+                justClicked: false,                 
                 minesAroundCount: 0
             }
         }
@@ -506,6 +865,10 @@ function gameOver() {
     document.querySelector('.modal h1').innerHTML = 'Game Over!'
     showAllBoard()
     gGame.isOn = false
+
+    document.querySelector('.leaderboard-name').style.display = 'none'
+    document.querySelector('.leaderboard-button').style.display = 'none'
+
 }
 
 function victorious() {
@@ -515,12 +878,21 @@ function victorious() {
     document.querySelector('.modal h1').innerHTML = 'Victorious!'
     showAllBoard()
     gGame.isOn = false
+
+    document.querySelector('.leaderboard-name').style.display = 'block'
+    document.querySelector('.leaderboard-button').style.display = 'block'
+
 }
 
-// things to refactor:
-// 1."justClicked: false"
-// 2. move style.display to util funcions "hide" & "show"
-// 3. merge timer tick & mine counter to a single function 
-// 4. 
+function saveScore() {
+    var name = document.querySelector('.leaderboard-name').value
+    var time = gGame.secsPassed
 
+    gLeaderBoard.push({name: name, time: time})
+    localStorage.setItem("minesweeper-leaderboard", JSON.stringify(gLeaderBoard))
+    renderLeaderBoard()
+    document.querySelector('.leaderboard-name').style.display = 'none'
+    document.querySelector('.leaderboard-button').style.display = 'none'
+
+}
 

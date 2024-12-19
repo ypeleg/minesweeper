@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light"> <!-- found this online, not entirely sure how it works if being honest..  -->
 
 <head>
     <meta charset="UTF-8">
@@ -11,86 +11,190 @@
 
 <body onload="onInit()" oncontextmenu="return false;">
 
-    
-    <div class="game-container">
-        
-        <div class="title-bar">
-            <img class = "img-icon" src = "img/icon.png"/>
-            <span class = "title-bar-text">Minesweeper</span>
-            <img class = "control-buttons" src = "img/win_95_control_buttons.png"/>
-        </div>
 
-        <div class="menu-bar">
-            <span class = "menu-item" onclick="onInit(4, 2)"><u>E</u>asy</span>
-            <span class = "menu-item" onclick="onInit(8, 14)"><u>M</u>edium</span>
-            <span class = "menu-item" onclick="onInit(12, 32)"><u>H</u>ard</span>
-            <!-- <span class = "menu-item" onclick="onInit(16, 64)"><u>V</u>ery Hard</span> -->
-        </div>
+    <table class = "meta-table">
+        <tr>
+            <td>
+                <div class="game-container">
 
-        <div class = "actual-game">        
-            <div class = "header">
-                <table>
-                    <tr>
-                        <td class = "mines">
-                            <img class = "digit digit-2" src = "img/digit-0.png"/>
-                            <img class = "digit digit-1" src = "img/digit-0.png"/>
-                            <img class = "digit digit-0" src = "img/digit-0.png"/>
-                        </td>
-                        <td>
-                            <img class = "smiley" onclick = "onInit()" src = "img/smiley.png"/>
-                        </td>
-                        <td class = "timer">
-                            <img class = "digit digit-2" src = "img/digit-0.png"/>
-                            <img class = "digit digit-1" src = "img/digit-0.png"/>
-                            <img class = "digit digit-0" src = "img/digit-0.png"/>
-                        </td>
-                    </tr>
-                </table>
+                    <div class="title-bar">
+                        <img class = "img-icon" src = "img/icon.png"/>
+                        <span class = "title-bar-text">Minesweeper</span>
+                        <img class = "control-buttons" src = "img/win_95_control_buttons.png"/>
+                    </div>
 
-            </div>        
-            <div class="board-container">
+                    <div class="menu-bar">
+                        <span class = "menu-item" onclick="onInit(4, 2)"><u>E</u>asy</span>
+                        <span class = "menu-item" onclick="onInit(8, 14)"><u>M</u>edium</span>
+                        <span class = "menu-item" onclick="onInit(12, 32)"><u>H</u>ard</span>
+                        <!-- <span class = "menu-item" onclick="onInit(16, 64)"><u>V</u>ery Hard</span> -->
 
-            </div>
-            
-            <div class = "header">
-                <table>
-                    <tr>
-                        <td class = "items-container"> 
-                            <img class = "img-item lives item-1" src = "img/heart.png"/>
-                            <img class = "img-item lives item-2" src = "img/heart.png"/>
-                            <img class = "img-item lives item-3" src = "img/heart.png"/>
-                        </td>
-                        
-                        <td class = "items-container cheat-item" onclick="onSafeClicked()"> 
-                            <img class = "img-item safes item-1" src = "img/magnify.png"/>
-                            <img class = "img-item safes item-2" src = "img/magnify.png"/>
-                            <img class = "img-item safes item-3" src = "img/magnify.png"/>
-                        </td>
+                        <span class = "menu-item menu-item-float-right" onclick="restartInCreatorMode()"> <img class = "img-creator" src="img/pencil.png"/> </span>
 
-                        <td class = "items-container cheat-item" onclick="onHintsClicked()"> 
-                            <img class = "img-item hints item-1" src = "img/bulb.png"/>
-                            <img class = "img-item hints item-2" src = "img/bulb.png"/>
-                            <img class = "img-item hints item-3" src = "img/bulb.png"/>
-                        </td>
+                    </div>
 
-                        <td class = "items-container cheat-item" onclick="onMegaHintsClicked()"> 
-                            <img class = "img-item mega item-1" src = "img/mega-hint.png"/>
-                        </td>
+                    <div class = "actual-game">
+                        <div class = "header">
+                            <table>
+                                <tr>
+                                    <td class = "mines">
+                                        <img class = "digit digit-2" src = "img/digit-0.png"/>
+                                        <img class = "digit digit-1" src = "img/digit-0.png"/>
+                                        <img class = "digit digit-0" src = "img/digit-0.png"/>
+                                    </td>
+                                    <td>
+                                        <img class = "smiley" onclick = "onInit()" src = "img/smiley.png"/>
+                                    </td>
+                                    <td class = "timer">
+                                        <img class = "digit digit-2" src = "img/digit-0.png"/>
+                                        <img class = "digit digit-1" src = "img/digit-0.png"/>
+                                        <img class = "digit digit-0" src = "img/digit-0.png"/>
+                                    </td>
+                                </tr>
+                            </table>
 
-                        <!-- <td class = "author">Yam Peleg</td> -->
-                    </tr>
-                </table>
-            </div>
+                        </div>
+                        <div class="board-container">
 
-        </div>        
-    
+                        </div>
 
-    </div>
-    
-    <div class="modal">
-        <h1> </h1>
-        <button onclick="onInit()"> Play Again? </button>    
-    </div>
+                        <div class = "header">
+                            <table>
+                                <tr>
+                                    <td class = "items-container">
+                                        <img class = "img-item lives item-1" src = "img/heart.png"/>
+                                        <img class = "img-item lives item-2" src = "img/heart.png"/>
+                                        <img class = "img-item lives item-3" src = "img/heart.png"/>
+                                    </td>
+
+                                    <td class = "items-container cheat-item safe-button" onclick="onSafeClicked()">
+                                        <img class = "img-item safes item-1" src = "img/magnify.png"/>
+                                        <img class = "img-item safes item-2" src = "img/magnify.png"/>
+                                        <img class = "img-item safes item-3" src = "img/magnify.png"/>
+                                    </td>
+
+                                    <td class = "items-container cheat-item hints-button" onclick="onHintsClicked()">
+                                        <img class = "img-item hints item-1" src = "img/bulb.png"/>
+                                        <img class = "img-item hints item-2" src = "img/bulb.png"/>
+                                        <img class = "img-item hints item-3" src = "img/bulb.png"/>
+                                    </td>
+
+                                    <td class = "items-container cheat-item mega-button" onclick="onMegaHintsClicked()">
+                                        <img class = "img-item mega item-1" src = "img/mega-hint.png"/>
+                                    </td>
+
+                                    <td class = "items-container cheat-item exterminator-button" onclick="onMineExterminatorClicked()">
+                                        <img class = "img-item exterminator item-1" src = "img/mine-x.png"/>
+                                    </td>
+
+                                    <!-- <td class = "author">Yam Peleg</td> -->
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div class = "undergame-footer">
+                    <button id="theme-toggle-button" onclick="toggleTheme()">Dark Mode</button>
+
+                    <button id="undo-button" onclick="undoClicked()">Undo</button>
+
+                </div>
+
+                <div class="modal">
+                    <h1> </h1>
+
+                    <div>
+                        <input class="leaderboard-name" type="text" name="name" placeholder="Enter your name to submit your score!">
+                        <button class="leaderboard-button" onclick="saveScore()">Submit</button>
+                    </div>
+
+
+                    <div>
+                        <button onclick="onInit()"> Play Again? </button>
+                    </div>
+                </div>
+
+            </td>
+
+
+            <td>
+                <div class="text-align-left">
+
+                    <table class="how-to-play-table">
+
+                        <tr>
+                            <td> <h3> How to play? </h3> </td>
+                        </tr>
+
+                        <tr>
+                            <td> <div class="cell-hidden-howto"></div>  </td>
+                            <td> <p> <b>Click</b> on a cell to reveal it. </p> </td>
+                        </tr>
+
+                        <tr>
+                            <td> <img class = "how-to-play-img" src = "img/red-flag.png"/> </td>
+                            <td> <p> You think you found a mine? <b>right click</b> to flag it. </p> </td>
+                        </tr>
+
+                        <tr>
+                            <td> <img class = "how-to-play-img" src = "img/mine-x.png"/> </td>
+                            <td> <p> If you are right, you get a point. </p> </td>
+                        </tr>
+
+                        <tr>
+                            <td> <img class = "how-to-play-img" src = "img/heart.png"/> </td>
+                            <td> <p> You have 3 lives. </p> </td>
+                        </tr>
+
+                        <tr>
+                            <td> <h3> Cheats </h3> </td>
+                        </tr>
+
+                        <tr>
+                            <td> <img class = "how-to-play-img" src = "img/magnify.png"/> </td>
+                            <td> <p> Click on the magnifying glass to reveal a safe cell. </p> </td>
+                        </tr>
+
+                        <tr>
+                            <td> <img class = "how-to-play-img" src = "img/bulb.png"/> </td>
+                            <td> <p> Click on the light bulb to reveal a hint. </p> </td>
+                        </tr>
+
+                        <tr>
+                            <td> <img class = "how-to-play-img" src = "img/mega-hint.png"/> </td>
+                            <td> <p> Click on the mega hint to reveal a MEGA hint. </p> </td>
+                        </tr>
+
+                        <tr>
+                            <td> <img class = "how-to-play-img" src = "img/mine-x.png"/> </td>
+                            <td> <p> Exterminator removes 3 mines. </p> </td>
+                        </tr>
+
+                    </table>
+
+
+                </div>
+            </td>
+
+
+            <td>
+                <div class = "leaderboard-container">
+
+                </div>
+            </td>
+
+
+
+
+        </tr>
+    </table>
+
+
+
     
     
 

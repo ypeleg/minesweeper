@@ -1,17 +1,45 @@
 
+:root {
+    --pressed: #7b7b7b #ffffff #ffffff #7b7b7b;
+    --unpressed: #ffffff #7b7b7b #7b7b7b #ffffff;
+
+    --hovered: #d7d7d7;
+    --hovered-strong: #e7e7e7;
+
+    --background: #bdbdbd;
+    --board-background: #7b7b7b;
+
+    --title-bar-color: #0a0487;
+
+    --border-highlight: 2px solid red;
+}
+
+:root.dark-mode {
+    --pressed: #3b3b3b #1f1f1f #1f1f1f #3b3b3b;
+    --unpressed: #1f1f1f #3b3b3b #3b3b3b #1f1f1f;
+
+    --hovered: #555555;
+    --hovered-strong: #666666;
+
+    --background: #1e1e1e;
+    --board-background: #3b3b3b;
+
+    --title-bar-color: #121212;
+
+    --border-highlight: 2px solid cyan;
+}
 
 body {
     font-size: 14px;
 	text-align: center;
     font-family: Arial, Helvetica, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .title-bar {
-    background-color: #0a0487;
     height: 20px;
-    padding: 1px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 2px 1px 2px 1px;
+    background-color: var(--title-bar-color);
 }
 
 .mines {
@@ -26,128 +54,134 @@ body {
 
 .smiley {
     padding: 2px;
-
-    border-top: 2px solid #ffffff;
-    border-left: 2px solid #ffffff;
-    border-right: 2px solid #7b7b7b;
-    border-bottom: 2px solid #7b7b7b;
+    border: 2px solid;
+    border-color: var(--unpressed);
 }
 
-/* .smiley:hover { */
-    /* background-color: #ffffff;    */
-/* } */
-
 .smiley:active {
-    border-top: 2px solid #7b7b7b;
-    border-left: 2px solid #7b7b7b;
-    border-right: 2px solid #ffffff;
-    border-bottom: 2px solid #ffffff;
+    border: 2px solid;
+    border-color: var(--pressed);
 }
 
 .digit {
-    margin-left: -3px;
-    margin-right: -3px;
+    margin-inline: -3px;
+}
+
+.meta-table {
+    width: 100%;
+    margin: auto;
+    padding: 4px;
+    border-spacing: 1px;
 }
 
 .header table {
-    margin: auto;
-    border-spacing: 1px;
-    padding: 4px;
     width: 100%;
+    margin: auto;
+    padding: 4px;
+    border-spacing: 1px;
 }
 
 .board-container table {
 	margin: auto;
     border-spacing: 1px;
-    background-color: #7b7b7b;
+    background-color: var(--board-background);
     border-collapse: separate;
 
-    border-top: 2px solid #7b7b7b;
-    border-left: 2px solid #7b7b7b;
+    border: 2px solid;
+    border-color: var(--pressed);
 
-    border-right: 2px solid #ffffff;
-    border-bottom: 2px solid #ffffff;
 }
 
 .header {
     margin: 6px;
     min-width: 130px;
 
-    border-top: 2px solid #7b7b7b;
-    border-left: 2px solid #7b7b7b;
-    border-right: 2px solid #ffffff;
-    border-bottom: 2px solid #ffffff;
+    border: 2px solid;
+    border-color: var(--pressed);
 }
 
 
 .game-container{
     padding: 2px;
     display: inline-block;
-    background-color: #bdbdbd;
+    background-color: var(--background);
 
-    border-top: 2px solid #ffffff;
-    border-left: 2px solid #ffffff;
-    border-right: 2px solid #7b7b7b;
-    border-bottom: 2px solid #7b7b7b;
+    border: 2px solid;
+    border-color: var(--unpressed);
 }
 
 .actual-game{
     padding: 2px;
-    background-color: #bdbdbd;
+    background-color: var(--background);
 
-    border-top: 2px solid #ffffff;
-    border-left: 2px solid #ffffff;
-    border-right: 2px solid #7b7b7b;
-    border-bottom: 2px solid #7b7b7b;
+    border: 2px solid;
+    border-color: var(--unpressed);
 }
 
 .board-container{
     padding: 0px 6px 6px 6px;
-    background-color: #bdbdbd;
+    background-color: var(--background);
 }
 
-.cell-hidden:hover {
-    background-color: #d7d7d7;
-
-}
-
-.cell-hidden:active {
-    /*display: block;*/
-    border: 2px solid #bdbdbd;
-    background-color: #bdbdbd;
-}
-
-.cell-shown {
-    width: 11px;
-    height: 11px;
-
+.hovered-cell-open {
     border: 0px;
-    /*display: block;*/
-    background-color: #bdbdbd;
+    width: 13px;
+    height: 13px;
+    background-color: var(--hovered-strong);
 }
 
-.cell-hidden {
+.hovered-cell {
     width: 11px;
     height: 11px;
 
     padding: 0px;
 
-    border-top: 2px solid #ffffff;
-    border-left: 2px solid #ffffff;
-    border-right: 2px solid #7b7b7b;
-    border-bottom: 2px solid #7b7b7b;
-    background-color: #bdbdbd;
+    border: 2px solid;
+    background-color: var(--hovered-strong);
+    border-color: var(--unpressed);
+}
+
+.cell-hidden:hover {
+    background-color: var(--hovered);
+
+}
+
+.cell-hidden:active {
+    border: 2px solid var(--background);
+    background-color: var(--background);
+}
+
+.cell-shown {
+    border: 0px;
+    width: 13px;
+    height: 13px;
+    background-color: var(--background);
+}
+
+.cell-hidden {
+    width: 11px;
+    height: 11px;
+    padding: 0px;
+    border: 2px solid;
+    background-color: var(--background);
+    border-color: var(--unpressed);
+}
+
+.img-creator {
+    float: left;
+    display: block;
+    max-height: 15px;
 }
 
 .img-icon {
-    display: block;
     float: left;
+    display: block;
     max-height: 20px;
 }
 
 .control-buttons{
-    display: block;
     float: right;
+    display: block;
     max-height: 20px;
 }
 
@@ -158,8 +192,8 @@ body {
 }
 
 .inner-img {
-    display: block;
     margin: auto;
+    display: block;
 }
 
 .modal {
@@ -169,120 +203,128 @@ body {
 .menu-bar {
     height: 20px;
     text-align: left;
+    margin: 6px 0 2px;
+}
 
-    margin-top: 6px;
-    margin-bottom: 2px;
 
+.menu-item-float-right {
+    float: right;
+    margin-top: -5px;
 }
 
 .menu-item {
     cursor: pointer;
-
-    padding-left: 7px;
-    padding-right: 7px;
-    
-    padding-top: 2px;
-    padding-bottom: 2px;
-    
-    border-top: 2px solid #bdbdbd;
-    border-left: 2px solid #bdbdbd;
-    border-right: 2px solid #bdbdbd;
-    border-bottom: 2px solid #bdbdbd;
-
+    padding: 2px 7px;
+    border: 2px solid var(--background);
 }
 
 .menu-item:hover {
-    background-color: #d7d7d7;
-    
-    border-top: 2px solid #ffffff;
-    border-left: 2px solid #ffffff;
-    border-right: 2px solid #7b7b7b;
-    border-bottom: 2px solid #7b7b7b;
-
+    border: 2px solid;
+    background-color: var(--hovered);
+    border-color: var(--unpressed);
 }
 
 .menu-item:active {
-    /* border: 2px solid #bdbdbd; */
-    border-top: 2px solid #7b7b7b;
-    border-left: 2px solid #7b7b7b;
-    border-right: 2px solid #ffffff;
-    border-bottom: 2px solid #ffffff;
-
-    /* background-color: #bdbdbd; */
+    border: 2px solid;
+    border-color: var(--pressed);
 }
 
 .footer {
-    
-    margin-left: 5px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    
-
-    border-top: 2px solid #7b7b7b;
-    border-left: 2px solid #7b7b7b;
-    border-right: 2px solid #ffffff;
-    border-bottom: 2px solid #ffffff;
-
-    
-}
-
-.items-container {
-    padding-left: 10px;
+    margin: 0 5px 5px;
+    border: 2px solid;
+    border-color: var(--pressed);
 }
 
 .items-container  .img-item {
-    padding-top:2px;
     width: 15px;
+    padding-top:2px;
 }
-
-
 
 .author {
-    display: inline;
     float: right;
+    display: inline;
 }
 
-
-
-
+.used-cheat {
+    padding: 2px 7px;
+}
 
 .cheat-item {
     cursor: pointer;
-
-    padding-left: 7px;
-    padding-right: 7px;
-    
-    padding-top: 2px;
-    padding-bottom: 2px;
-    
-    border-top: 2px solid #bdbdbd;
-    border-left: 2px solid #bdbdbd;
-    border-right: 2px solid #bdbdbd;
-    border-bottom: 2px solid #bdbdbd;
-
+    padding: 2px 7px;
+    border: 2px solid var(--background);
 }
 
 .cheat-item:hover {
-    background-color: #d7d7d7;
-    
-    border-top: 2px solid #ffffff;
-    border-left: 2px solid #ffffff;
-    border-right: 2px solid #7b7b7b;
-    border-bottom: 2px solid #7b7b7b;
+    border: 2px solid;
+    background-color: var(--hovered);
+    border-color: var(--unpressed);
+}
 
+.active-button {
+    cursor: pointer;
+    padding: 2px 7px;
+    border: 2px solid;
+    border-color: var(--pressed);
 }
 
 .cheat-item:active {
-    /* border: 2px solid #bdbdbd; */
-    border-top: 2px solid #7b7b7b;
-    border-left: 2px solid #7b7b7b;
-    border-right: 2px solid #ffffff;
-    border-bottom: 2px solid #ffffff;
+    border: 2px solid;
+    border-color: var(--pressed);
+}
 
-    /* background-color: #bdbdbd; */
+.border-highlight {
+    border: var(--border-highlight);
+}
+
+.undergame-footer {
+    margin-top: 10px;
+}
+
+.text-align-left {
+    text-align: left;
+}
+
+.how-to-play-img {
+    width: 15px;
+    height: 15px;
+
+}
+
+.cell-hidden-howto {
+    width: 13px;
+    height: 13px;
+    padding: 0px;
+    border: 2px solid;
+    background-color: var(--background);
+    border-color: var(--unpressed);
+}
+
+.how-to-play-table {
+    padding: 10px 30px 10px 30px;
+    background-color: var(--background);
+    border: 2px solid;
+    border-color: var(--unpressed);
+
+    border-collapse: separate;
+    border-spacing: 1px;
+
+}
+
+.how-to-play-table tr {
+
+
+}
+
+.how-to-play-table-container {
+    background-color: var(--background);
+    border: 2px solid;
+    border-color: var(--unpressed);
 }
 
 
-.border-highlight {
-    border: 2px solid red;
+.leaderboard-table {
+    text-align: left;
+    padding: 10px 30px 10px 30px;
+    border: 2px solid;
 }
