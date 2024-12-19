@@ -226,17 +226,63 @@ body {
     
 }
 
-.lives-container {
+.items-container {
     padding-left: 10px;
 }
+
+.items-container  .img-item {
+    padding-top:2px;
+    width: 15px;
+}
+
+
 
 .author {
     display: inline;
     float: right;
 }
 
-.img-heart {
-    padding-top:2px;
-    width: 15px;
+
+
+
+
+.cheat-item {
+    cursor: pointer;
+
+    padding-left: 7px;
+    padding-right: 7px;
+    
+    padding-top: 2px;
+    padding-bottom: 2px;
+    
+    border-top: 2px solid #bdbdbd;
+    border-left: 2px solid #bdbdbd;
+    border-right: 2px solid #bdbdbd;
+    border-bottom: 2px solid #bdbdbd;
+
 }
 
+.cheat-item:hover {
+    background-color: #d7d7d7;
+    
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #7b7b7b;
+    border-bottom: 2px solid #7b7b7b;
+
+}
+
+.cheat-item:active {
+    /* border: 2px solid #bdbdbd; */
+    border-top: 2px solid #7b7b7b;
+    border-left: 2px solid #7b7b7b;
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+
+    /* background-color: #bdbdbd; */
+}
+
+
+.border-highlight {
+    border: 2px solid red;
+}

@@ -20,7 +20,7 @@ function renderBoard(mat, selector) {
                          oncontextmenu="onCellMarked(${i}, ${j})",
                          data-i="${i}" data-j="${j}">`
 
-            if (cell.isShown) {
+            if (cell.isShown || cell.isGlimps) {
                 if (cell.isMine) {
                     if (cell.justClicked) {
                         strHTML += '<img class="inner-img" src="img/mine-red.png"/>'

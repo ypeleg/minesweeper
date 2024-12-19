@@ -1,13 +1,25 @@
 'use strict'
 
 const gGame = {
-    isOn: false,
-    livesLeft: 3,
+    
+    // Essentials
+    isOn: false,        
     shownCount: 0,
+    markedCount: 0,    
+    
+    // Further Tasks
+    livesLeft: 3,
     secsPassed: 0,
-    markedCount: 0,
     firstClick: false,
     timerInterval: null,    
+
+    // Bonus Tasks
+    nHints: 3,    
+    isHintMode: false,
+
+    nSafes: 3,
+    nMegas: 1,
+
 }
 
 const gLevel = {
@@ -17,20 +29,35 @@ const gLevel = {
 
 var gBoard
 
+
+// cursor modes:
+// hint (neighbors highlighted)
+
+
+
+
+
 // Essentials:
-// TODO: 3 lives
+// TODO: Author footer
 
 
 
 // Bonus:
-// 1. Hints (show for 1 sec)
-// 2. Best scores (read about local storage)
-// 3. Safe click (mark a safe cell to click on)
+// 1. Hints (show neighbors of whatever cell you click for 1 sec and "use the hint")
+
+// 3. Safe click (mark a safe cell to click on [border?])
+// 7. Mega hint: "draggable hint of unlimited size"
+
+// 2. Leaderboard (local storage)
+
+
 // 4. "Manually create mode"
 // 5. Undo button
 // 6. Dark mode
-// 7. Mega hint: "draggable hint of unlimited size"
 // 8. Mine exterminator (deletes 3 mines randomlly)
+
+
+
 
 function unFlashSmiley() {
     if (gGame.isOn) {
@@ -52,15 +79,32 @@ function onInit(boardSize = null, mines = null) {
         gLevel.MINES = mines
         gLevel.SIZE = boardSize
     }
+    
 
+    // Essentials
     gGame.isOn = true   
     gGame.livesLeft = 3
     gGame.shownCount = 0
     gGame.secsPassed = 0
     gGame.markedCount = 0
     gGame.firstClick = false
+    
+    // Bonus Tasks
+    gGame.nHints = 3
+    gGame.nSafes = 3
+    gGame.nMegas = 1
+    gGame.isHintMode = false
+
+
+    
     updateLivesCounter()
     clearInterval(gGame.timerInterval)
+
+    // Bonus
+    updateHintsCounter()
+    updateSafesCounter()
+    updateMegaHintsCounter()
+
     document.querySelector('.smiley').src = 'img/smiley.png'
 
     timerTick()
@@ -140,24 +184,181 @@ function initMinesAround(board){
 function updateLivesCounter(){
     
     if (gGame.livesLeft == 3) {
-        document.querySelector('.live-1').src = 'img/heart.png'
-        document.querySelector('.live-2').src = 'img/heart.png'
-        document.querySelector('.live-3').src = 'img/heart.png'
+        document.querySelector('.lives.item-1').src = 'img/heart.png'
+        document.querySelector('.lives.item-2').src = 'img/heart.png'
+        document.querySelector('.lives.item-3').src = 'img/heart.png'
     } else if (gGame.livesLeft == 2) {
-        document.querySelector('.live-1').src = 'img/heart.png'
-        document.querySelector('.live-2').src = 'img/heart.png'
-        document.querySelector('.live-3').src = 'img/broken-heart.png'
+        document.querySelector('.lives.item-1').src = 'img/heart.png'
+        document.querySelector('.lives.item-2').src = 'img/heart.png'
+        document.querySelector('.lives.item-3').src = 'img/broken-heart.png'
     } else if (gGame.livesLeft == 1) {
-        document.querySelector('.live-1').src = 'img/heart.png'
-        document.querySelector('.live-2').src = 'img/broken-heart.png'
-        document.querySelector('.live-3').src = 'img/broken-heart.png'    
+        document.querySelector('.lives.item-1').src = 'img/heart.png'
+        document.querySelector('.lives.item-2').src = 'img/broken-heart.png'
+        document.querySelector('.lives.item-3').src = 'img/broken-heart.png'    
     } else {
-        document.querySelector('.live-1').src = 'img/broken-heart.png'
-        document.querySelector('.live-2').src = 'img/broken-heart.png'
-        document.querySelector('.live-3').src = 'img/broken-heart.png'
+        document.querySelector('.lives.item-1').src = 'img/broken-heart.png'
+        document.querySelector('.lives.item-2').src = 'img/broken-heart.png'
+        document.querySelector('.lives.item-3').src = 'img/broken-heart.png'
     }
 
 }
+
+
+
+
+
+
+
+
+//////// Cheat: Mega-Hint ////////
+
+function updateMegaHintsCounter(){
+    if (gGame.nMegas > 0) {        
+        document.querySelector('.mega.item-1').src = 'img/mega-hint.png'
+    } else {
+        document.querySelector('.mega.item-1').src = 'img/Empty.png'
+    }
+}
+
+//////// Cheat: Mega-Hint ////////
+
+
+
+//////// Cheat: Safe ////////
+
+function updateSafesCounter(){    
+    if (gGame.nSafes == 3) {        
+        document.querySelector('.safes.item-1').src = 'img/magnify.png'
+        document.querySelector('.safes.item-2').src = 'img/magnify.png'
+        document.querySelector('.safes.item-3').src = 'img/magnify.png'
+    } else if (gGame.nSafes == 2) {        
+        document.querySelector('.safes.item-1').src = 'img/magnify.png'
+        document.querySelector('.safes.item-2').src = 'img/magnify.png'
+        document.querySelector('.safes.item-3').src = 'img/empty.png'
+    } else if (gGame.nSafes == 1) {        
+        document.querySelector('.safes.item-1').src = 'img/magnify.png'
+        document.querySelector('.safes.item-2').src = 'img/empty.png'
+        document.querySelector('.safes.item-3').src = 'img/empty.png'
+    } else {
+        document.querySelector('.safes.item-1').src = 'img/empty.png'
+        document.querySelector('.safes.item-2').src = 'img/empty.png'
+        document.querySelector('.safes.item-3').src = 'img/empty.png'
+    }
+}
+
+function getAllSafe(board){
+    var safeIndices = []
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board[0].length; j++) {
+            if (!board[i][j].isMine){
+                safeIndices.push({i:i, j:j})
+            }            
+        }
+    }
+    return safeIndices
+}
+
+function unshowSafe() {
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard.length; j++) {                        
+            var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`) 
+            elCell.classList.remove('border-highlight')
+        }
+    }
+}
+
+function showSafe(i, j) {
+    var elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`) 
+    elCell.classList.add('border-highlight')
+    setTimeout(unshowSafe, 3000)
+}
+
+function onSafeClicked() {
+    if (gGame.nSafes > 0) {        
+        gGame.nSafes-- 
+        updateSafesCounter()
+        var safeIndex = randomChoice(getAllSafe(gBoard))        
+        showSafe(safeIndex.i, safeIndex.j)
+    }
+}
+
+//////// Cheat: Safe ////////
+
+
+
+
+
+
+//////// Cheat: Hint ////////
+
+function updateHintsCounter(){
+    
+    if (gGame.nHints == 3) {        
+        document.querySelector('.hints.item-1').src = 'img/bulb.png'
+        document.querySelector('.hints.item-2').src = 'img/bulb.png'
+        document.querySelector('.hints.item-3').src = 'img/bulb.png'
+    } else if (gGame.nHints == 2) {        
+        document.querySelector('.hints.item-1').src = 'img/bulb.png'
+        document.querySelector('.hints.item-2').src = 'img/bulb.png'
+        document.querySelector('.hints.item-3').src = 'img/empty.png'
+    } else if (gGame.nHints == 1) {        
+        document.querySelector('.hints.item-1').src = 'img/bulb.png'
+        document.querySelector('.hints.item-2').src = 'img/empty.png'
+        document.querySelector('.hints.item-3').src = 'img/empty.png'
+    } else {
+        document.querySelector('.hints.item-1').src = 'img/empty.png'
+        document.querySelector('.hints.item-2').src = 'img/empty.png'
+        document.querySelector('.hints.item-3').src = 'img/empty.png'
+    }
+
+}
+
+function onHintsClicked() {
+    if (gGame.nHints > 0) {        
+        gGame.nHints-- 
+        updateHintsCounter()
+        gGame.isHintMode = true
+        
+    }
+}
+
+function onMegaHintsClicked() {
+    if (gGame.nMegas > 0) {        
+        gGame.nMegas-- 
+        updateMegaHintsCounter()
+        
+    }
+}
+
+function glimpseAllCellsAround(rowIdx, colIdx, mat) {    
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i >= mat.length) continue
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (j < 0 || j >= mat[0].length) continue
+            if (i === rowIdx && j === colIdx) continue
+            mat[i][j].isGlimps = true            
+        }
+    }    
+    setTimeout(unglimpsAllBoard, 1000)
+}
+
+function unglimpsAllBoard() {    
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+            gBoard[i][j].isGlimps = false
+        }
+    }
+    renderBoard(gBoard, '.board-container')    
+}
+
+
+//////// Cheat: Hint ////////
+
+
+
+
+
+
 
 function onCellClicked(i, j) {
     
@@ -172,7 +373,6 @@ function onCellClicked(i, j) {
     }
 
     if (!gGame.isOn) return
-
     
 
     const cell = gBoard[i][j]
@@ -186,6 +386,13 @@ function onCellClicked(i, j) {
     cell.isShown = true
     cell.justClicked = true
     gGame.shownCount++
+
+    if (gGame.isHintMode){
+        glimpseAllCellsAround(i, j, gBoard)
+        gGame.isHintMode = false
+    }
+    
+    
     if (cell.minesAroundCount === 0) {
         expandShown(gBoard, i, j)
     }
@@ -273,6 +480,7 @@ function buildBoard(size, mines) {
             board[i][j] = {                
                 isMine: false,
                 isShown: false,
+                isGlimps: false,
                 isMarked: false,
                 justClicked: false, 
                 minesAroundCount: 0

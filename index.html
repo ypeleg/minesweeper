@@ -52,14 +52,31 @@
 
             </div>
             
-            <div class = "footer">
+            <div class = "header">
                 <table>
                     <tr>
-                        <td class = "lives-container"> 
-                            <img class = "img-heart live-1" src = "img/heart.png"/>
-                            <img class = "img-heart live-2" src = "img/heart.png"/>
-                            <img class = "img-heart live-3" src = "img/heart.png"/>
+                        <td class = "items-container"> 
+                            <img class = "img-item lives item-1" src = "img/heart.png"/>
+                            <img class = "img-item lives item-2" src = "img/heart.png"/>
+                            <img class = "img-item lives item-3" src = "img/heart.png"/>
                         </td>
+                        
+                        <td class = "items-container cheat-item" onclick="onSafeClicked()"> 
+                            <img class = "img-item safes item-1" src = "img/magnify.png"/>
+                            <img class = "img-item safes item-2" src = "img/magnify.png"/>
+                            <img class = "img-item safes item-3" src = "img/magnify.png"/>
+                        </td>
+
+                        <td class = "items-container cheat-item" onclick="onHintsClicked()"> 
+                            <img class = "img-item hints item-1" src = "img/bulb.png"/>
+                            <img class = "img-item hints item-2" src = "img/bulb.png"/>
+                            <img class = "img-item hints item-3" src = "img/bulb.png"/>
+                        </td>
+
+                        <td class = "items-container cheat-item" onclick="onMegaHintsClicked()"> 
+                            <img class = "img-item mega item-1" src = "img/mega-hint.png"/>
+                        </td>
+
                         <!-- <td class = "author">Yam Peleg</td> -->
                     </tr>
                 </table>
