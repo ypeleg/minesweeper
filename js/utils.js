@@ -4,8 +4,8 @@ function renderLeaderBoard() {
     if (!(gLeaderBoard.length === 0)) {
         var strHTML = '<table class="leaderboard-table"><tbody>'
         strHTML += `<tr>
-                        <th>Name</th>
-                        <th>Time</th>
+                        <th class="lb-header">Name</th>
+                        <th class="lb-header">Time</th>
                     </tr>`
 
         for (var i = 0; i < gLeaderBoard.length; i++) {

@@ -67,10 +67,11 @@ body {
     margin-inline: -3px;
 }
 
-.meta-table {
+.meta-table {    
     width: 100%;
     margin: auto;
     padding: 4px;
+    margin-top: 5%;
     border-spacing: 1px;
 }
 
@@ -85,7 +86,7 @@ body {
 	margin: auto;
     border-spacing: 1px;
     background-color: var(--board-background);
-    border-collapse: separate;
+    border-collapse: collapse;
 
     border: 2px solid;
     border-color: var(--pressed);
@@ -108,6 +109,8 @@ body {
 
     border: 2px solid;
     border-color: var(--unpressed);
+
+    min-width: 200px;
 }
 
 .actual-game{
@@ -189,6 +192,7 @@ body {
     float: left;
     color: white;
     padding-top: 1px;
+    margin-left: 5px;
 }
 
 .inner-img {
@@ -301,13 +305,15 @@ body {
 }
 
 .how-to-play-table {
+    /* width: 90%; */
     padding: 10px 30px 10px 30px;
     background-color: var(--background);
+
     border: 2px solid;
     border-color: var(--unpressed);
-
     border-collapse: separate;
     border-spacing: 1px;
+    margin: 0 auto;
 
 }
 
@@ -322,9 +328,49 @@ body {
     border-color: var(--unpressed);
 }
 
+.leaderboard-container {
+    width: 60%;
+    margin: 0 auto;
+    padding: 15px;
+    background-color: var(--background);
+}
 
-.leaderboard-table {
-    text-align: left;
-    padding: 10px 30px 10px 30px;
+.leaderboard-container table {
+    text-align: center;
+    border-collapse: collapse;
+    border: 3px solid;
+    
+    border-color: var(--pressed);
+}
+
+.leaderboard-table th {    
+    padding: 4px 8px 4px 8px;
+    
     border: 2px solid;
+    border-color: var(--unpressed);
+}
+
+.leaderboard-table td {
+    background-color: white;
+    padding: 4px;
+    border: 1px solid;
+    border-color: var(--unpressed);
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.meta-table > tbody > tr > td {
+    vertical-align: top;
+}
+
+.meta-table>td:nth-child(1) {
+    width: 40%; 
+}
+
+.meta-table>td:nth-child(2) {
+    width: 30%;
+}
+
+.meta-table>td:nth-child(3) {
+    width: 30%;
 }
